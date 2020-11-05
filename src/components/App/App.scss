@@ -1,0 +1,395 @@
+// easing
+// https://www.carbondesignsystem.com/guidelines/motion/basics
+$motion-standard-productive: cubic-bezier(0.2, 0, 0.38, 0.9);
+$motion-entrance-productive: cubic-bezier(0, 0, 0.38, 0.9);
+$motion-exit-productive: cubic-bezier(0.2, 0, 1, 0.9);
+$motion-standard-expressive: cubic-bezier(0.4, 0.14, 0.3, 1);
+$motion-entrance-expressive: cubic-bezier(0, 0, 0.3, 1);
+$motion-exit-expressive: cubic-bezier(0.4, 0.14, 1, 1);
+
+$duration-fast01: 70ms;			// Micro-interactions such as button and toggle
+$duration-fast02: 110ms;		// Micro-interactions such as fade
+$duration-moderate01: 150ms;	// Micro-interactions, small expansion, short distance movements
+$duration-moderate02: 240ms;	// Expansion, system communication, toast
+$duration-slow01: 400ms;		// Large expansion, important system notifications
+$duration-slow02: 700ms;		// Background dimming
+
+@keyframes console-show {
+    0% {
+        transform: translateY(-405px);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+:root {
+    font-size: 15px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', Roobert, 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.qcolor1 { color: #E21D1D; }
+.qcolor2 { color: #52B339; }
+.qcolor3 { color: #E8BD13; }
+.qcolor4 { color: #1D76CF; }
+.qcolor5 { color: #25BEC7; }
+.qcolor6 { color: #BE2EBE; }
+.qcolor7 { color: #fff; }
+.qcolor8 { color: #C97223; }
+.qcolor9 { color: #8E8686; }
+.qcolor0 { color: #000; }
+
+.app-wrap {
+    position: relative;
+}
+
+// .controls-visible {
+//     .console-button {
+//         opacity: 1.0;
+//     }
+// }
+// .controls-hidden:not(.console-opened):not(:hover) {
+//     .console-button {
+//         opacity: 0.7;
+//     }
+// }
+
+// -----------------------------------------------------
+// --- Theme
+// -----------------------------------------------------
+
+.theme-light {
+    color:#232127;
+
+    .console-button {
+        filter: saturate(200%) invert(100%);
+    }
+
+    .console-wrap {
+        background-color: rgba(230, 230, 235, 0.9);
+        background-image: url('q3logo_5p.png');
+        // border-bottom: 3px solid rgb(218, 84, 84);
+        box-shadow: rgba(0, 0, 0, 0.8) 0px 5px 60px;
+        border-bottom-width: 3px;
+        border-bottom-style: solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(to right, transparent 0%, #9147FF 50%, transparent 100%);
+    }
+
+    .row {
+        // border-color: rgb(187, 187, 187) !important;
+
+        .timestamp {
+            color: rgb(100, 100, 100);
+        }
+
+        .message {
+            color: #095f09;
+        }
+    }
+
+    .input-element-wrap {
+        background-color: rgba(#b6b6b6, 0.7);
+    }
+
+    .input {
+        background-color: rgba(#E5E5E5, 0.7);
+        color: #111;
+
+        // &:focus {
+        //     border-color: #CCCCCC;
+        // }
+    }
+}
+
+.theme-dark {
+    color:#e5e3e8;
+
+    .console-button {
+        filter: saturate(200%);
+    }
+
+    .console-wrap {
+        background-color: rgba(30, 30, 35, 0.9);
+        background-image: url('q3logo_20p.png');
+        // background-image: url('console01.jpg');
+        box-shadow: rgba(0, 0, 0, 0.8) 0px 5px 60px;
+        // border-bottom: 2px solid #303032;
+        border-bottom-width: 3px;
+        border-bottom-style: solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(to right, transparent 0%, #9147FF 50%, transparent 100%);
+    }
+
+    .row {
+        // border-color: #464649 !important;
+
+        .timestamp {
+            color: rgb(102, 102, 102);
+        }
+
+        .message {
+            color: rgb(71, 206, 71);
+        }
+    }
+
+    .input-element-wrap {
+        background-color: rgba(#3d3d41, 0.7);
+    }
+
+    .input {
+        background-color: rgba(#5E5E60, 0.7);
+        color: #fff;
+
+        // &:focus {
+        //     border-color: #5E5E60;
+        // }
+    }
+}
+
+// -----------------------------------------------------
+// --- Button
+// -----------------------------------------------------
+
+.console-button {
+    color: #fff;
+    position: absolute;
+    left: 15px;
+    top: 100px;
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
+    font-size: 3.1rem;
+    text-align: center;
+    line-height: 55px;
+    font-weight: normal;
+    z-index: 1;
+    cursor: pointer;
+    transition: opacity 125ms ease-in;
+    background-image: url('console01.jpg');
+    transition: transform $duration-fast02 $motion-entrance-productive;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+}
+
+// -----------------------------------------------------
+// --- Console
+// -----------------------------------------------------
+
+.console-opened {
+    .console-button {
+        // top: 400px;
+        // border-radius: 0 0 5px 5px;
+        // border: 2px solid #303032;
+        // border-top: none;
+        display: none;
+    }
+
+    .console-wrap {
+        display: block;
+        animation: console-show $duration-fast02 $motion-entrance-productive;
+    }
+}
+.console-closed {
+    .console-wrap {
+        display: none;
+    }
+}
+
+.console-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    // justify-content: stretch;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+    // font-family: 'Exo 2';
+    height: 400px;
+}
+
+.console-content-wrap {
+    width: 100%;
+    height: calc(100% - 70px);
+    flex-grow: 2;
+    overflow: hidden;
+    position: relative;
+
+    .rows-wrap {
+        display: flex;
+        align-content: flex-end;
+        flex-wrap: wrap;
+        min-height: 100%;
+    }
+
+    .row {
+        width: 100%;
+        padding: 5px 10px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        border-bottom: 1px solid transparent;
+    }
+
+    .col {
+        
+    }
+
+    .timestamp {
+        white-space: nowrap;
+        padding-right: 10px;
+        text-align: right;
+        width: 55px;
+        min-width: 55px;
+        height: 23px;
+        line-height: 23px;
+        font-size: 0.8rem;
+    }
+
+    .player-name {
+        white-space: nowrap;
+        padding-right: 5px;
+        font-weight: bold;
+        height: 23px;
+        line-height: 23px;
+        text-shadow: rgba(0, 0, 0, 0.4) 1px 1px 0px;
+    }
+
+    .message {
+        flex-grow: 2;
+        align-self: center;
+        width: 100%;
+    }
+}
+
+.console-scroller {
+    overflow-y: scroll;
+    width: calc(100% + 20px);
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    padding-right: 25px;
+}
+
+.console-input-wrap {
+    width: 100%;
+    max-height: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+
+    .input-element-wrap {
+        padding: 2px;
+        border-radius: 5px;
+        flex-grow: 2;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .input {
+        // border-width: 2px;
+        // border-style: solid;
+        border: none;
+        padding: 8px 10px;
+        outline: 0;
+        border-radius: 4px;
+        width: 100%;
+        font-family: 'Inter', Roobert, 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 2;
+    }
+}
+
+.close-console-button {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+// -----------------------------------------------------------------
+// - Messages (info, error, warning...)
+// -----------------------------------------------------------------
+
+@keyframes msg-show {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes msg-hide {
+    0% { transform: translateY(0px); opacity: 1; }
+    100% { transform: translateY(30px); opacity: 0; }
+}
+
+.msg-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    transition: background-color $duration-moderate01 $motion-exit-productive;
+
+    &.-hide {
+        background-color: transparent;
+
+        .msg-message {
+            animation: msg-hide $duration-moderate01 $motion-exit-productive forwards;
+            transition: background-color $duration-moderate01 $motion-entrance-productive;
+        }
+    }
+
+    .icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+
+    .msg-message {
+        position: absolute;
+        right: 10px;
+        top: -25px;
+        height: 25px;
+        line-height: 25px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        border-radius: 3px 3px 0 0;
+        padding: 0 10px;
+        z-index: -1;
+        animation: msg-show $duration-moderate01 $motion-entrance-productive backwards;
+    }
+}
+
+.msg-info {
+    background-color: #16a6e9;
+    .icon { fill: rgb(207, 236, 255); }
+    .msg-message { background-color: #16a6e9; color: rgb(207, 236, 255); }
+}
+.msg-success {
+    background-color: #16d154;
+    .icon { fill: rgb(207, 255, 207); }
+    .msg-message { background-color: #16d154; color: rgb(207, 255, 207); }
+}
+.msg-warning {
+    background-color: #e07f10;
+    .icon { fill: rgb(255, 232, 221); }
+    .msg-message { background-color: #e07f10; color: rgb(255, 232, 221); }
+}
+.msg-error {
+    background-color: #E91916;
+    .icon { fill: rgb(255, 176, 176); }
+    .msg-message { background-color: #E91916; color:rgb(255, 176, 176); }
+}
