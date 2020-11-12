@@ -84,7 +84,7 @@ body {
     }
 
     .row {
-        // border-color: rgb(187, 187, 187) !important;
+        text-shadow: rgba(0, 0, 0, 0.3) 1px 1px 0px;
         
         &.-announce {
             .message {
@@ -94,6 +94,7 @@ body {
 
         .timestamp {
             color: rgb(100, 100, 100);
+            text-shadow: none;
         }
 
         .message {
@@ -300,7 +301,6 @@ body {
         // font-weight: bold;
         height: 23px;
         line-height: 23px;
-        text-shadow: rgba(0, 0, 0, 0.6) 1px 1px 0px;
     }
 
     .message {
