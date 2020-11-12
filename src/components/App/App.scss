@@ -155,6 +155,10 @@ body {
         .message {
             color:#52B339;
         }
+
+        .qcolor0 {
+            text-shadow: rgba(255, 255, 255, 0.2) 1px 1px 0px;
+        }
     }
 
     .close-console-button {
@@ -526,6 +530,10 @@ body {
         width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .qcolor0 {
+        text-shadow: rgba(255, 255, 255, 0.6) 1px 1px 0px;
     }
 }
 
