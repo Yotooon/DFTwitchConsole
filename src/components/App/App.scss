@@ -85,6 +85,12 @@ body {
 
     .row {
         // border-color: rgb(187, 187, 187) !important;
+        
+        &.-announce {
+            .message {
+                color: #fff;
+            }
+        }
 
         .timestamp {
             color: rgb(100, 100, 100);
@@ -93,6 +99,10 @@ body {
         .message {
             color: #095f09;
         }
+    }
+
+    .close-console-button {
+        fill: #111;
     }
 
     .input-element-wrap {
@@ -131,13 +141,23 @@ body {
     .row {
         // border-color: #464649 !important;
 
+        &.-announce {
+            .message {
+                color: #fff;
+            }
+        }
+
         .timestamp {
             color: rgb(102, 102, 102);
         }
 
         .message {
-            color: rgb(71, 206, 71);
+            color:#52B339;
         }
+    }
+
+    .close-console-button {
+        fill: #ccc;
     }
 
     .input-element-wrap {
@@ -162,7 +182,7 @@ body {
     color: #fff;
     position: absolute;
     left: 15px;
-    top: 100px;
+    top: 170px;
     width: 60px;
     height: 60px;
     border-radius: 60px;
@@ -170,7 +190,7 @@ body {
     text-align: center;
     line-height: 55px;
     font-weight: normal;
-    z-index: 1;
+    z-index: 2;
     cursor: pointer;
     transition: opacity 125ms ease-in;
     background-image: url('console01.jpg');
@@ -211,7 +231,7 @@ body {
     // justify-content: stretch;
     flex-direction: column;
     position: relative;
-    z-index: 2;
+    z-index: 3;
     // font-family: 'Exo 2';
     height: 400px;
 }
@@ -232,11 +252,31 @@ body {
 
     .row {
         width: 100%;
-        padding: 5px 10px;
+        padding: 2px 10px;
         display: flex;
         flex-wrap: nowrap;
         align-items: flex-start;
         border-bottom: 1px solid transparent;
+    }
+
+    .row-intro {
+        width: 100%;
+        padding: 20px;
+        line-height: 1.4;
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-image: linear-gradient(to right, #9147FF, #772CE8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 3px;
+        }
     }
 
     .col {
@@ -257,16 +297,18 @@ body {
     .player-name {
         white-space: nowrap;
         padding-right: 5px;
-        font-weight: bold;
+        // font-weight: bold;
         height: 23px;
         line-height: 23px;
-        text-shadow: rgba(0, 0, 0, 0.4) 1px 1px 0px;
+        text-shadow: rgba(0, 0, 0, 0.6) 1px 1px 0px;
     }
 
     .message {
         flex-grow: 2;
         align-self: center;
         width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
@@ -315,7 +357,14 @@ body {
 
 .close-console-button {
     margin-right: 20px;
+    width: 25px;
+    height: 25px;
     cursor: pointer;
+    transition: transform $duration-fast02 $motion-entrance-productive;
+
+    &:hover {
+        transform: scale(1.1);
+    }
 }
 
 // -----------------------------------------------------------------
@@ -392,4 +441,153 @@ body {
     background-color: #E91916;
     .icon { fill: rgb(255, 176, 176); }
     .msg-message { background-color: #E91916; color:rgb(255, 176, 176); }
+}
+
+// -----------------------------------------------------------------
+// - Notify Lines
+// -----------------------------------------------------------------
+
+@keyframes notify-show {
+    0% { transform: translateY(-30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.notify-lines-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 75%;
+    font-size: 1.1rem;
+
+    &.say-opened {
+        .say-button {
+            display: block;
+
+            .say-svg {
+                fill: #fff;
+            }
+        }
+        .say-txt {
+            display: block;
+            padding: 0 15px;
+            animation: notify-show $duration-moderate01 $motion-entrance-productive;
+        }
+        .notify-input-wrap {
+            display: block;
+            animation: notify-show $duration-moderate01 $motion-entrance-productive;
+        }
+        .notify-input-area {
+            
+        }
+    }
+
+    &.say-closed {
+        .notify-input-area {
+            display: flex;
+            justify-content: flex-start;
+        }
+    }
+}
+
+.notify-lines {
+    width: 100%;
+    min-height: 100px;
+    padding: 5px;
+    // display: flex;
+    // flex-wrap: nowrap;
+    // align-items: flex-start;
+    border-bottom: 1px solid transparent;
+    box-sizing: border-box;
+
+    .line-wrap {
+        width: 100%;
+        padding: 3px 10px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        border-bottom: 1px solid transparent;
+        box-sizing: border-box;
+        color: #fff;
+        text-shadow: rgba(0, 0, 0, 0.9) 1px 1px 1px;
+    }
+
+    .player-name {
+        white-space: nowrap;
+        padding-right: 5px;
+        // font-weight: bold;
+        // height: 30px;
+        // line-height: 30px;
+    }
+
+    .message {
+        flex-grow: 2;
+        align-self: center;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.notify-input-area {
+    width: 100%;
+    max-height: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    position: relative;
+
+    .say-button {
+        display: inline-block;
+        cursor: pointer;
+        font-size: 0;
+        transition: transform $duration-fast02 $motion-entrance-productive;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+
+    .say-svg {
+        fill: #9147FF;
+        width: 25px;
+        height: 25px;
+    }
+
+    .say-txt {
+        color: #fff;
+        padding-right: 15px;
+        display: none;
+        text-shadow: rgba(0, 0, 0, 0.9) 1px 1px 1px;
+    }
+}
+
+.notify-input-wrap {
+    padding: 2px;
+    border-radius: 5px;
+    flex-grow: 2;
+    box-sizing: border-box;
+    position: relative;
+    background-image: linear-gradient(to right, rgba(#111, 0.5) 0%, transparent 50%);
+    display: none;
+
+    .notify-input {
+        // border-width: 2px;
+        // border-style: solid;
+        border: none;
+        padding: 8px 10px;
+        outline: 0;
+        border-radius: 4px;
+        width: 100%;
+        font-family: 'Inter', Roobert, 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 1rem;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 2;
+        background: transparent;
+        color: #fff;
+    }
 }

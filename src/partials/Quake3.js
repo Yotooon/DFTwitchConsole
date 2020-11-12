@@ -1,9 +1,18 @@
 import React from 'react'
 
-const q3regex = /\^([0-9]{1})(.?[^\^]+)/gi
+// replaces ^7^2^... multiple colors next to eachother with just one ^7
+const r_clean = /(\^[0-9]){2,}/gi
+
+// removes color codes from end of string
+const r_end = /(\^[0-9])+$/i
+
+const r_colors = /\^([0-9]{1})(.?[^\^]+)/gi
 
 export function Q3STR(props) {
-    let newstr = props.s.replace(q3regex, '<span class="qcolor$1">$2</span>')
+    let newstr = props.s.replace(r_clean, '$1')
+    newstr = newstr.replace(r_end, '')
+    newstr = newstr.replace(r_colors, '<span class="qcolor$1">$2</span>')
+
     return (
         <span dangerouslySetInnerHTML={{ __html: newstr }}/>
     )

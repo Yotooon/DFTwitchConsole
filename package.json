@@ -10,7 +10,11 @@
     "cert": "./bin/generate_cert.sh server",
     "host": "webpack-dev-server --mode development --devrig"
   },
-  "keywords": ["defrag", "twitch", "quake 3"],
+  "keywords": [
+    "defrag",
+    "twitch",
+    "quake 3"
+  ],
   "author": "Yotoon & friends",
   "license": "ISC",
   "devDependencies": {
