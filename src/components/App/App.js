@@ -8,26 +8,6 @@ import NotifyLines from './NotifyLines'
 import { unix2time } from '../../util/DateTime'
 import Message from '../../partials/StatusMessages'
 
-function Notifications({messages=[], setMessages, delay=2000}) {
-    const msgs = [...messages]
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (msgs.length) {
-                msgs.shift()
-                setMessages(msgs)
-            }
-        }, delay)
-        return () => clearTimeout(timer)
-    }, [messages])
-
-    return (
-        <div>
-            {messages.messages.map(msg => <div key={msg.id}>{msg.content}</div>)}
-        </div>
-    )
-}
-
 export default class App extends React.Component {
     constructor(props) {
         super(props)
@@ -179,7 +159,6 @@ export default class App extends React.Component {
         this.setState({
             messages: this.state.messages
         }, () => {
-            this.inputEl.current.value = ''
             this.scrollerEl.current.scrollTop = this.scrollerEl.current.scrollHeight - this.scrollerEl.current.clientHeight
         })
 
