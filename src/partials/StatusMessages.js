@@ -4,16 +4,29 @@ export default class Message extends React.Component {
     constructor(props) {
         super(props)
 
+        this.timeout = null
+
         this.state = {
             hide: false,
         }
     }
 
-    componentDidMount() {
-        setTimeout(() => {
-            this.setState({ hide: true })
-        }, 3000)
-    }
+    // componentDidMount() {
+    //     if(this.props.type !== 'error') {
+    //         this.timeout = setTimeout(() => {
+    //             this.setState({ hide: true })
+    //         }, 3000)
+    //     }
+    // }
+
+    // componentWillReceiveProps(newProps) {
+    //     if(newProps.type !== 'error') {
+    //         clearTimeout(this.timeout)
+    //         this.timeout = setTimeout(() => {
+    //             this.setState({ hide: true })
+    //         }, 3000)
+    //     }
+    // }
 
     render() {
         return (

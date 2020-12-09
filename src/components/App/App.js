@@ -7,6 +7,7 @@ import Row from './Rows'
 import NotifyLines from './NotifyLines'
 import { unix2time } from '../../util/DateTime'
 import Message from '../../partials/StatusMessages'
+import { setInterval } from 'core-js'
 
 export default class App extends React.Component {
     constructor(props) {
@@ -18,6 +19,7 @@ export default class App extends React.Component {
 
         // websocket server
         this.ws = null
+        this.ws_reconn_interval = null
         
         this.state = {
             finishedLoading: false,
@@ -50,6 +52,9 @@ export default class App extends React.Component {
 
         this.initWebsocket = this.initWebsocket.bind(this)
         this.onConsoleMessage = this.onConsoleMessage.bind(this)
+        this.onConnect = this.onConnect.bind(this)
+        this.onDisconnect = this.onDisconnect.bind(this)
+        this.onError = this.onError.bind(this)
         this.appendMessage = this.appendMessage.bind(this)
 
         // this.fetchMessages = this.fetchMessages.bind(this)
@@ -77,42 +82,84 @@ export default class App extends React.Component {
         })
     }
 
-    sendMessage(msg) {
-        let full_msg = new FormData()
-        full_msg.append('author', msg.author)
-        full_msg.append('message', msg.message)
-
-        if(msg.command !== 'undefined') {
-            full_msg.append('command', msg.command)
-        }
-
-        fetch('http://localhost:5000/console/send', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: full_msg
-        })
-        .then((data) => {
-            if(data.ok) {
-                return data.json()
-            }
-            throw new Error('Network response was not OK')
-        })
-        .then((data) => {
-            console.log(data)
-        })
-    }
-
     initWebsocket() {
         this.ws = new WebSocket("ws://localhost:5005")
         this.ws.onmessage = this.onConsoleMessage
+        this.ws.onerror = this.onError
+        this.ws.onopen = this.onConnect
+        this.ws.onclose = this.onDisconnect
+
+        this.setState({
+            status_message: {
+                'type': 'info',
+                'message': 'Connecting...',
+            }
+        })
+    }
+
+    onConnect() {
+        clearInterval(this.ws_reconn_interval)
+        this.setState({status_message: null})
+    }
+
+    onDisconnect(ev) {
+        // if code == 1000 means the connection closed normally
+        if(ev.code != 1000) {
+            if(!navigator.onLine) {
+                this.setState({
+                    status_message: {
+                        'type': 'error',
+                        'message': 'You are offline. Please connect to the internet and try again.',
+                    }
+                })
+            }
+        } else {
+            this.setState({
+                status_message: {
+                    'type': 'warning',
+                    'message': 'Disconnected.',
+                }
+            }, () => {
+                this.ws_reconn_interval = setInterval(() => {
+                    this.initWebsocket()
+                }, 4000)
+            })
+        }
+    }
+
+    onError(ev) {
+        clearInterval(this.ws_reconn_interval)
+
+        if(this.ws) {
+            if(this.ws.readyState == 3) {
+                this.setState({
+                    status_message: {
+                        'type': 'error',
+                        'message': 'Error: Connection closed abnormally.',
+                    }
+                }, () => {
+                    this.ws_reconn_interval = setInterval(() => {
+                        this.initWebsocket()
+                    }, 4000)
+                })
+                return
+            }
+        }
+
+        this.setState({
+            status_message: {
+                'type': 'error',
+                'message': 'Error: ' + ev.data,
+            }
+        })
     }
 
     onConsoleMessage(ev) {
         let msg = JSON.parse(ev.data)
+
+        if(msg.origin) {
+            return
+        }
 
         if(msg.action === 'message') {
             msg.message.time = unix2time(msg.message.timestamp)
@@ -190,17 +237,20 @@ export default class App extends React.Component {
                     'message': 'Your message cannot be blank',
                 }
             }, () => {
-                // Hide the message after X amount of time
                 setTimeout(() => {
-                    this.setState({ status_message: null })
-                }, 3500)
+                    this.setState({status_message: null})
+                }, 2000);
             })
             return false
         }
 
         let new_msg = {
-            'author': me,
-            'message': msg,
+            'action': 'message',
+            'origin': 'twitch',
+            'message': {
+                'author': me,
+                'content': msg,
+            },
         }
 
         if(msg.startsWith('!')) {
@@ -209,11 +259,66 @@ export default class App extends React.Component {
             }
         }
 
-        this.sendMessage(new_msg)
+        let ok = this.sendMessageWS(new_msg)
+        if(!ok) {
+            return false
+        }
 
         this.inputEl.current.value = ''
         this.scrollerEl.current.scrollTop = this.scrollerEl.current.scrollHeight - this.scrollerEl.current.clientHeight
 
+        return true
+    }
+
+    // sendMessage(msg) {
+    //     let full_msg = new FormData()
+    //     full_msg.append('author', msg.author)
+    //     full_msg.append('message', msg.message)
+
+    //     if(msg.command !== 'undefined') {
+    //         full_msg.append('command', msg.command)
+    //     }
+
+    //     fetch('http://localhost:5000/console/send', {
+    //         method: 'POST',
+    //         mode: 'no-cors',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             // 'Content-Type': 'application/x-www-form-urlencoded',
+    //         },
+    //         body: full_msg
+    //     })
+    //     .then((data) => {
+    //         if(data.ok) {
+    //             return data.json()
+    //         }
+    //         throw new Error('Network response was not OK')
+    //     })
+    //     .then((data) => {
+    //         console.log(data)
+    //     })
+    // }
+
+    sendMessageWS(msg) {
+        if(!this.ws) {
+            return false
+        }
+
+        let states = ['connecting', 'open', 'closing', 'closed']
+        if(this.ws.readyState !== 1) {
+            this.setState({
+                status_message: {
+                    'type': 'error',
+                    'message': `The connection is ${states[this.ws.readyState]}...`,
+                }
+            }, () => {
+                this.ws_reconn_interval = setInterval(() => {
+                    this.initWebsocket()
+                }, 4000)
+            })
+        }
+
+        this.ws.send(JSON.stringify(msg))
         return true
     }
 
